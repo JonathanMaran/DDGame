@@ -75,28 +75,35 @@ public class Game implements GameState {
 		return currentCase;
 	}
 
+	public void setCurrentCase(int currentCase) {
+		this.currentCase = currentCase;
+	}
 	//public void setLastLog(String lastLog) {
 	//	this.lastLog = lastLog;
 	//}
 
 	public void moveHero(int count) {
 		currentCase = currentCase + count;
-		Case positionCase = chosenMap.getListCase().get(currentCase);
-		lastLog = "Vous avez avancé de " + count + " et vous êtes à la case " + currentCase;
+		lastLog = "Vous avancez de " + count + " et vous êtes maintenant sur la case " + currentCase + " ! \n";
+		
 		if(currentCase >= chosenMap.getNumberOfCase()) {
 			status = GameStatus.FINISHED;
-			lastLog = "Le jeu est terminé !";
+			lastLog = "Vous avancez de " + count + " et vous avez maintenant terminé le jeu ! \n"
+					+ "Félicitation pour cette belle VICTOIRE !";
 		} else if(chosenHero.getLife() <= 0){
+			Case positionCase = chosenMap.getListCase().get(currentCase);
 			status = GameStatus.FINISHED;
-			lastLog = "Vous avez avancé de " + count + " et vous êtes à la case " + currentCase + "\n"
+			lastLog = "Vous avancez de " + count + " et vous êtes maintenant sur la case " + currentCase + " !\n"
 					+ positionCase.open((Fighters) chosenHero) + "\n"
-					+ "Le jeu est terminé.";
+					+ "Le jeu est terminé CAR VOUS ETES MORRTTTTTT.";
 		} else {
-			lastLog = "Vous avez avancé de " + count + " et vous êtes à la case " + currentCase + "\n"
+			Case positionCase = chosenMap.getListCase().get(currentCase);
+			lastLog = "Vous avancez de " + count + " et vous êtes maintenant sur la case " + currentCase + " !\n"
 					+ positionCase.open((Fighters) chosenHero);
+			if(chosenHero.getLife() <= 0) {
+				status = GameStatus.FINISHED;
+			}
 		}
-
-
 	}
 
 }

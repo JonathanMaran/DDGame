@@ -7,8 +7,12 @@ public class EmptyCase implements Case {
 
 	@Override
 	public String open(Fighters fighter) {
-		System.out.println("Case vide");
-		return null;
+		String answer = null;
+		
+		answer = "CASE VIDE ! \n"
+				+ "Vous êtes sur une case vide, l'occasion idéale de se reposer et reprendre des forces !";
+		
+		return answer;
 	}
 	
 }
