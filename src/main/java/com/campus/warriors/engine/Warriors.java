@@ -1,5 +1,6 @@
 package com.campus.warriors.engine;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,7 +9,7 @@ import com.campus.warriors.contracts.GameState;
 import com.campus.warriors.contracts.Hero;
 import com.campus.warriors.contracts.Map;
 import com.campus.warriors.contracts.WarriorsAPI;
-import com.campus.warriors.engine.database.DatabaseManager;
+import com.campus.warriors.engine.database.FightersDAO;
 import com.campus.warriors.engine.maps.BaseMap;
 import com.campus.warriors.engine.maps.FirstMap;
 
@@ -17,7 +18,8 @@ public class Warriors implements WarriorsAPI {
 	private boolean debugMode;
 	private int gameCount;
 	private java.util.Map<String, Game> startedGames;
-	private DatabaseManager databaseManager;
+	private FightersDAO fightersDao;
+	Connection conn;
 
 	public Warriors() {
 		this(false);
@@ -27,7 +29,7 @@ public class Warriors implements WarriorsAPI {
 		this.gameCount = 1;
 		this.debugMode = debugMode;
 		this.startedGames = new HashMap<String, Game>();
-		this.databaseManager = new DatabaseManager();
+		this.fightersDao = new FightersDAO(conn);
 	}
 	
 	public boolean isDebugMode() {
@@ -42,7 +44,7 @@ public class Warriors implements WarriorsAPI {
 	public List<? extends Hero> getHeroes() {
 		//on va chercher les infos en base de données
 		
-		return databaseManager.getHeroes();
+		return fightersDao.findAll();
 		//return List.of(new Warrior(), new Magician());
 	}
 

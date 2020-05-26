@@ -3,8 +3,13 @@ package com.campus.warriors.engine.database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.campus.warriors.engine.Fighters;
+import com.campus.warriors.engine.Magician;
+import com.campus.warriors.engine.Warrior;
 
 
 public class FightersDAO extends DAO<Fighters>{
@@ -54,6 +59,43 @@ public class FightersDAO extends DAO<Fighters>{
 		}
 		return fighters;
 
+	}
+	
+	@Override
+	public List<Fighters> findAll() {
+		List<Fighters> heroes = new ArrayList<Fighters>();
+
+		try {
+			//Création d'un objet Statement avec singleton
+			Statement state = SingletonConnection.getInstance().createStatement();
+			//L'objet ResultSet contient le résultat de la requête SQL
+			ResultSet result = state.executeQuery("SELECT * FROM Hero");
+			while(result.next()){  
+				Fighters fighter = null;
+				
+				if(result.getString("Type").equalsIgnoreCase("guerrier")) {
+					fighter = new Warrior();
+					
+				} else {
+					fighter = new Magician();
+				}
+				//for(int i = 1; i <= resultMeta.getColumnCount(); i++) {
+					//System.out.print("\t" + result.getObject(i).toString() + "\t |");
+				//}
+				//System.out.println("\n---------------------------------");
+				fighter.setName(result.getString("Nom"));
+				fighter.setLife(result.getInt("NiveauVie"));
+				fighter.setAttackLevel(result.getInt("NiveauForce"));
+				heroes.add(fighter);
+			}
+
+			result.close();
+			state.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return heroes; 
 	}
 
 }

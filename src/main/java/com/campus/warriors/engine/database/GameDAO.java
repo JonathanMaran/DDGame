@@ -3,6 +3,7 @@ package com.campus.warriors.engine.database;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.campus.warriors.engine.Fighters;
 import com.campus.warriors.engine.Game;
@@ -57,6 +58,12 @@ public class GameDAO extends DAO<Game>{
 			e.printStackTrace();
 		}
 		return game;
+	}
+
+	@Override
+	public List<Game> findAll() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
