@@ -1,6 +1,5 @@
 package com.campus.warriors.engine.enemiecase;
 
-import com.campus.warriors.contracts.GameStatus;
 import com.campus.warriors.engine.Case;
 import com.campus.warriors.engine.Fighters;
 

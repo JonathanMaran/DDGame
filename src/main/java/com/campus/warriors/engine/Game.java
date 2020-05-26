@@ -4,7 +4,6 @@ import com.campus.warriors.contracts.GameState;
 import com.campus.warriors.contracts.GameStatus;
 import com.campus.warriors.contracts.Hero;
 import com.campus.warriors.contracts.Map;
-import com.campus.warriors.engine.enemiecase.EnemieCase;
 import com.campus.warriors.engine.maps.BaseMap;
 
 /**
@@ -20,6 +19,7 @@ public class Game implements GameState {
 	private int currentCase;
 	GameStatus status;
 	String lastLog;
+	
 
 
 	// constructeur
@@ -85,17 +85,11 @@ public class Game implements GameState {
 	public void moveHero(int count) {
 		currentCase = currentCase + count;
 		lastLog = "Vous avancez de " + count + " et vous êtes maintenant sur la case " + currentCase + " ! \n";
-		
+
 		if(currentCase >= chosenMap.getNumberOfCase()) {
 			status = GameStatus.FINISHED;
 			lastLog = "Vous avancez de " + count + " et vous avez maintenant terminé le jeu ! \n"
 					+ "Félicitation pour cette belle VICTOIRE !";
-		} else if(chosenHero.getLife() <= 0){
-			Case positionCase = chosenMap.getListCase().get(currentCase);
-			status = GameStatus.FINISHED;
-			lastLog = "Vous avancez de " + count + " et vous êtes maintenant sur la case " + currentCase + " !\n"
-					+ positionCase.open((Fighters) chosenHero) + "\n"
-					+ "Le jeu est terminé CAR VOUS ETES MORRTTTTTT.";
 		} else {
 			Case positionCase = chosenMap.getListCase().get(currentCase);
 			lastLog = "Vous avancez de " + count + " et vous êtes maintenant sur la case " + currentCase + " !\n"

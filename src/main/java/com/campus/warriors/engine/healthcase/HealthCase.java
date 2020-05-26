@@ -2,7 +2,6 @@ package com.campus.warriors.engine.healthcase;
 
 import com.campus.warriors.engine.Case;
 import com.campus.warriors.engine.Fighters;
-import com.campus.warriors.engine.Warrior;
 
 public class HealthCase implements Case {
 

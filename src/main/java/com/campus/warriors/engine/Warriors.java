@@ -8,18 +8,42 @@ import com.campus.warriors.contracts.GameState;
 import com.campus.warriors.contracts.Hero;
 import com.campus.warriors.contracts.Map;
 import com.campus.warriors.contracts.WarriorsAPI;
+import com.campus.warriors.engine.database.DatabaseManager;
 import com.campus.warriors.engine.maps.BaseMap;
 import com.campus.warriors.engine.maps.FirstMap;
 
 public class Warriors implements WarriorsAPI {
 
-	int gameCount = 1;
-	java.util.Map<String, Game> startedGames = new HashMap<String, Game>();
+	private boolean debugMode;
+	private int gameCount;
+	private java.util.Map<String, Game> startedGames;
+	private DatabaseManager databaseManager;
+
+	public Warriors() {
+		this(false);
+	}
+	
+	public Warriors(boolean debugMode) {
+		this.gameCount = 1;
+		this.debugMode = debugMode;
+		this.startedGames = new HashMap<String, Game>();
+		this.databaseManager = new DatabaseManager();
+	}
+	
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
 
 	@Override
 	public List<? extends Hero> getHeroes() {
-		// TODO Auto-generated method stub
-		return List.of(new Warrior(), new Magician());
+		//on va chercher les infos en base de données
+		
+		return databaseManager.getHeroes();
+		//return List.of(new Warrior(), new Magician());
 	}
 
 	@Override
@@ -36,7 +60,7 @@ public class Warriors implements WarriorsAPI {
 		if (!(map instanceof BaseMap)) {
 			throw new IllegalArgumentException("The map is not supported");
 		}
-		
+
 		String gameId = "game - " + gameCount;
 		Game game = new Game(playerName, hero, (BaseMap) map, gameId);
 		gameCount = gameCount + 1;
@@ -47,10 +71,18 @@ public class Warriors implements WarriorsAPI {
 	@Override
 	public GameState nextTurn(String gameID) {
 		Game game = startedGames.get(gameID);
+		int count =0;
 		//création du dé
-		int count = (int) (Math.random()*(6)+1);
+		// si je suis en débug, je lis un fichier
+		if(debugMode) {
+			count = 2;
+		}else {
+			//, sinon comportement normal
+			count = (int) (Math.random()*(6)+1);
+		}
+
 		game.moveHero(count);
 		return game;
-	
+
 	}
 }
