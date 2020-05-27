@@ -2,13 +2,16 @@ package com.campus.warriors.engine;
 
 public class Warrior extends Fighters {
 
-	public Warrior() {
-		super("Johnzy", "image", 5, 5);
-
+	
+	public Warrior(String string, String string2, int int1, int int2, int int3) {
+		super(string, string2, int1, int2, int3);
 	}
 
 	@Override
 	public void setLife(int life) {
+		//life = min(0, life);
+		//life = max(life, 10);
+		//super.setLife(life);
 		if(life > 10) {
 			this.life = 10;
 		}else if (life < 0) {

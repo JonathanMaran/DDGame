@@ -2,10 +2,11 @@ package com.campus.warriors.engine;
 
 public class Magician extends Fighters {
 
-	public Magician() {
-		super("Kogmow", "image2", 3, 8);
-	}
 	
+	public Magician(String string, String string2, int int1, int int2, int int3) {
+		super(string, string2, int1, int2, int3);
+	}
+
 	@Override
 	public void setLife(int life) {
 		if(life > 6) {

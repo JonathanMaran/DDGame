@@ -1,6 +1,5 @@
 package com.campus.warriors.engine;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,8 @@ import com.campus.warriors.contracts.Hero;
 import com.campus.warriors.contracts.Map;
 import com.campus.warriors.contracts.WarriorsAPI;
 import com.campus.warriors.engine.database.FightersDAO;
+import com.campus.warriors.engine.database.GameDAO;
+import com.campus.warriors.engine.database.SingletonConnection;
 import com.campus.warriors.engine.maps.BaseMap;
 import com.campus.warriors.engine.maps.FirstMap;
 
@@ -19,7 +20,6 @@ public class Warriors implements WarriorsAPI {
 	private int gameCount;
 	private java.util.Map<String, Game> startedGames;
 	private FightersDAO fightersDao;
-	Connection conn;
 
 	public Warriors() {
 		this(false);
@@ -28,8 +28,12 @@ public class Warriors implements WarriorsAPI {
 	public Warriors(boolean debugMode) {
 		this.gameCount = 1;
 		this.debugMode = debugMode;
+		List<Game> tmptGameList = new GameDAO(SingletonConnection.getInstance()).findAll();
 		this.startedGames = new HashMap<String, Game>();
-		this.fightersDao = new FightersDAO(conn);
+		for(int i = 0; i < tmptGameList.size(); i++) {
+			this.startedGames.put(tmptGameList.get(i).getGameId(), tmptGameList.get(i));
+		}
+		this.fightersDao = new FightersDAO(SingletonConnection.getInstance());
 	}
 	
 	public boolean isDebugMode() {
@@ -67,6 +71,10 @@ public class Warriors implements WarriorsAPI {
 		Game game = new Game(playerName, hero, (BaseMap) map, gameId);
 		gameCount = gameCount + 1;
 		startedGames.put(gameId, game);
+		// CREATE GAMEDAO pour faire le lien avec BDD lors de la création de la partie
+		GameDAO gameDao = new GameDAO(SingletonConnection.getInstance());
+		gameDao.create(game);
+		
 		return game;
 	}
 
@@ -84,6 +92,8 @@ public class Warriors implements WarriorsAPI {
 		}
 
 		game.moveHero(count);
+		GameDAO gameDao = new GameDAO(SingletonConnection.getInstance());
+		gameDao.update(game);
 		return game;
 
 	}

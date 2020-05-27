@@ -3,25 +3,34 @@ package com.campus.warriors.engine;
 import com.campus.warriors.contracts.Hero;
 import com.campus.warriors.engine.enemiecase.EnemieCase;
 
-public class Fighters implements Hero {
+public abstract class Fighters implements Hero {
 
 	protected String name;
 	protected String image;
 	protected int life;
 	protected int attackLevel;
+	protected int id;
 	
-	public Fighters(String name, String image, int life, int attackLevel) {
+
+
+	public Fighters(String name, String image, int life, int attackLevel, int id/*, int maxLife*/) {
 	this.name = name;
 	this.image = image;
 	this.life = life;
 	this.attackLevel = attackLevel;
-
+	this.id = id;
+	//this.maxLife = maxLife;
 	}
 	
 	public void attack(EnemieCase enemie) {
 		enemie.setHealthPoints(enemie.getHealthPoints()- this.attackLevel);
 	}
-
+	
+	@Override
+	public int getId() {
+		return id;
+	}
+	
 	@Override
 	public String getName() {
 		// TODO Auto-generated method stub
@@ -48,6 +57,10 @@ public class Fighters implements Hero {
 
 	
 	
+	public void setId(int id) {
+		this.id = id;
+	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}
@@ -56,9 +69,7 @@ public class Fighters implements Hero {
 		this.image = image;
 	}
 
-	public void setLife(int life) {
-		this.life = life;
-	}
+	public abstract void setLife(int life);
 	
 	public void setAttackLevel(int attackLevel) {
 		this.attackLevel = attackLevel;

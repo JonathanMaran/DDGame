@@ -22,9 +22,9 @@ public class FightersDAO extends DAO<Fighters>{
 	}
 
 	@Override
-	public boolean create(Fighters obj) {
+	public void create(Fighters obj) {
 		// TODO Auto-generated method stub
-		return false;
+
 	}
 
 	@Override
@@ -34,33 +34,42 @@ public class FightersDAO extends DAO<Fighters>{
 	}
 
 	@Override
-	public boolean update(Fighters obj) {
-		// TODO Auto-generated method stub
-		return false;
+	public void update(Fighters obj) {
+
 	}
-	
+
 	@Override
 	public Fighters find(int id) {
-		Fighters fighters = null;     
+		Fighters fighter = null;     
 
 		try {
 			ResultSet result = this.connect.createStatement(
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 					ResultSet.CONCUR_READ_ONLY).executeQuery("SELECT * FROM Hero WHERE id = " + id);
-			if(result.first())
-				fighters = new Fighters(
-						result.getString("Nom"),
-						result.getString("Image"),
-						result.getInt("NiveauVie"),
-						result.getInt("NiveauForce")
-						);          
+			if(result.first()) {			
+
+				if(result.getString("Type").equalsIgnoreCase("guerrier")) {
+					fighter = new Warrior(result.getString("Nom"),
+							result.getString("Image"),
+							result.getInt("NiveauVie"),
+							result.getInt("NiveauForce"),
+							result.getInt("Id"));
+
+				} else {
+					fighter = new Magician(result.getString("Nom"),
+							result.getString("Image"),
+							result.getInt("NiveauVie"),
+							result.getInt("NiveauForce"),
+							result.getInt("Id"));
+				}
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		return fighters;
+		return fighter;
 
 	}
-	
+
 	@Override
 	public List<Fighters> findAll() {
 		List<Fighters> heroes = new ArrayList<Fighters>();
@@ -72,20 +81,26 @@ public class FightersDAO extends DAO<Fighters>{
 			ResultSet result = state.executeQuery("SELECT * FROM Hero");
 			while(result.next()){  
 				Fighters fighter = null;
-				
+
 				if(result.getString("Type").equalsIgnoreCase("guerrier")) {
-					fighter = new Warrior();
-					
+					fighter = new Warrior(result.getString("Nom"),
+							result.getString("Image"),
+							result.getInt("NiveauVie"),
+							result.getInt("NiveauForce"),
+							result.getInt("Id"));
+
 				} else {
-					fighter = new Magician();
+					fighter = new Magician(result.getString("Nom"),
+							result.getString("Image"),
+							result.getInt("NiveauVie"),
+							result.getInt("NiveauForce"),
+							result.getInt("Id"));
 				}
 				//for(int i = 1; i <= resultMeta.getColumnCount(); i++) {
-					//System.out.print("\t" + result.getObject(i).toString() + "\t |");
+				//System.out.print("\t" + result.getObject(i).toString() + "\t |");
 				//}
 				//System.out.println("\n---------------------------------");
-				fighter.setName(result.getString("Nom"));
-				fighter.setLife(result.getInt("NiveauVie"));
-				fighter.setAttackLevel(result.getInt("NiveauForce"));
+
 				heroes.add(fighter);
 			}
 

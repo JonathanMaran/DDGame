@@ -33,6 +33,8 @@ public class Game implements GameState {
 		lastLog = "Bienvenue " + chosenHero.getName() + "!";
 	}
 
+
+
 	@Override
 	public String getPlayerName() {
 
@@ -75,6 +77,10 @@ public class Game implements GameState {
 		return currentCase;
 	}
 
+	public void setChosenMap(BaseMap chosenMap) {
+		this.chosenMap = chosenMap;
+	}
+	
 	public void setCurrentCase(int currentCase) {
 		this.currentCase = currentCase;
 	}
