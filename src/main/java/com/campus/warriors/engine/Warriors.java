@@ -67,13 +67,16 @@ public class Warriors implements WarriorsAPI {
 			throw new IllegalArgumentException("The map is not supported");
 		}
 
-		String gameId = "game - " + gameCount;
-		Game game = new Game(playerName, hero, (BaseMap) map, gameId);
-		gameCount = gameCount + 1;
-		startedGames.put(gameId, game);
-		// CREATE GAMEDAO pour faire le lien avec BDD lors de la création de la partie
+		Game game = new Game(playerName, hero, (BaseMap) map);
+		
 		GameDAO gameDao = new GameDAO(SingletonConnection.getInstance());
 		gameDao.create(game);
+		
+		gameCount = gameCount + 1;
+		startedGames.put(game.getGameId(), game);
+		// CREATE GAMEDAO pour faire le lien avec BDD lors de la création de la partie
+		
+		
 		
 		return game;
 	}

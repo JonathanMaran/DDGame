@@ -51,13 +51,13 @@ public class ClientConsole {
 		int j = 0;
 		for (j = 0; j < listLoadGame.size(); j++) {
 			System.out.println(String.format(
-					"Partie : " + j+ ", Nom du héro: %s, Vie actuelle: %d, Force actuelle: %d, Case actuelle: %d",
+					"Partie : " + loadGame.findAll().get(j).getGameId()  + ", Nom du héro: %s, Vie actuelle: %d, Force actuelle: %d, Case actuelle: %d",
 					listLoadGame.get(j).getHero().getName(), listLoadGame.get(j).getHero().getLife(), listLoadGame.get(j).getHero().getAttackLevel(), listLoadGame.get(j).getCurrentCase()));
 		}
 
 		System.out.println("Quelle partie souhaitez-vous reprendre ?");
 		int id = Integer.parseInt(sc.nextLine());
-		Game chosenGame = listLoadGame.get(id);
+		Game chosenGame = loadGame.find(id);
 
 		while (chosenGame.getGameStatus() == GameStatus.IN_PROGRESS) {
 			System.out.println(chosenGame.getLastLog());

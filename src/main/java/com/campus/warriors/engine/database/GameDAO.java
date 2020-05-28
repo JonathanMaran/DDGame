@@ -1,6 +1,7 @@
 package com.campus.warriors.engine.database;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,13 +23,19 @@ public class GameDAO extends DAO<Game> {
 	public void create(Game obj) {
 		try {
 			// Création d'un objet Statement avec singleton
-			Statement state = SingletonConnection.getInstance().createStatement();
-			// update
-			state.executeUpdate(
-					"INSERT INTO `Game` (`PlayerName`, `HeroId`, `GameId`, `CurrentCase`, `HeroLife`, `HeroAttackLevel`)"
-							+ "VALUES ('" + obj.getPlayerName() + "', '" + obj.getHero().getId() + "', '"
-							+ obj.getGameId() + "' ,'" + obj.getCurrentCase() + "', '" + obj.getHero().getLife()
-							+ "' ,'" + obj.getHero().getAttackLevel() + "')");
+			//Statement state = SingletonConnection.getInstance().createStatement();
+			PreparedStatement pState = this.connect.prepareStatement("INSERT INTO `Game` (`PlayerName`, `HeroId`, `CurrentCase`, `HeroLife`, `HeroAttackLevel`)"
+					+ "VALUES ('" + obj.getPlayerName() + "', '" + obj.getHero().getId() + "', '"
+					+ obj.getCurrentCase() + "', '" + obj.getHero().getLife()
+					+ "' ,'" + obj.getHero().getAttackLevel() + "')", Statement.RETURN_GENERATED_KEYS);
+
+			pState.executeUpdate();
+
+			ResultSet result = pState.getGeneratedKeys();
+
+			if(result.next()) {
+				obj.setId(Integer.toString(result.getInt(1)));
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -51,7 +58,7 @@ public class GameDAO extends DAO<Game> {
 			// update
 
 			state.executeUpdate(String.format(
-					"UPDATE `Game` SET `CurrentCase` = '%d', `HeroLife` = '%d', `HeroAttackLevel` = '%d' WHERE `GameId` = '%s'",
+					"UPDATE `Game` SET `CurrentCase` = '%d', `HeroLife` = '%d', `HeroAttackLevel` = '%d' WHERE `Id` = '%s'",
 					obj.getCurrentCase(), obj.getHero().getLife(), obj.getHero().getAttackLevel(), obj.getGameId()));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -66,7 +73,7 @@ public class GameDAO extends DAO<Game> {
 		try {
 			ResultSet result = this.connect
 					.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY)
-					.executeQuery("SELECT * FROM Game WHERE GameId = " + id);
+					.executeQuery("SELECT * FROM Game WHERE Id = " + id);
 
 			// instanciation du FightersDAO pour pouvoir avoir accès aux HeroID, life
 			DAO<Fighters> fightersDao = new FightersDAO(SingletonConnection.getInstance());
@@ -74,7 +81,8 @@ public class GameDAO extends DAO<Game> {
 			if (result.first()) {
 				// je récupère la première colonne qui correspond au HeroId
 				Fighters searchFighters = fightersDao.find(result.getInt("HeroId"));
-				game = new Game(result.getString("PlayerName"), searchFighters, null, result.getString("GameId"));
+				game = new Game(result.getString("PlayerName"), searchFighters, null);
+				game.setId(result.getString("Id"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -96,11 +104,15 @@ public class GameDAO extends DAO<Game> {
 			DAO<Fighters> fightersDao = new FightersDAO(SingletonConnection.getInstance());
 
 			while (result.next()) {
-				Game tmpGame = new Game(result.getString("PlayerName"), fightersDao.find(result.getInt("HeroId")), null,
-						result.getString("GameId"));
+				Fighters findFighter = fightersDao.find(result.getInt("HeroId"));
+				findFighter.setLife(result.getInt("HeroLife"));
+				findFighter.setAttackLevel(result.getInt("HeroAttackLevel"));
 				
+				Game tmpGame = new Game(result.getString("PlayerName"), findFighter , null);
+				tmpGame.setId(result.getString("Id"));
+				tmpGame.setCurrentCase(result.getInt("CurrentCase"));
 				tmpGame.setChosenMap(new FirstMap());
-				
+
 				game.add(tmpGame);
 
 			}

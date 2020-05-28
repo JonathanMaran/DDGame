@@ -1,5 +1,7 @@
 package com.campus.warriors.engine;
 
+import java.sql.ResultSet;
+
 import com.campus.warriors.contracts.GameState;
 import com.campus.warriors.contracts.GameStatus;
 import com.campus.warriors.contracts.Hero;
@@ -23,11 +25,10 @@ public class Game implements GameState {
 
 
 	// constructeur
-	public Game(String namePlayer, Hero chosenHero, BaseMap chosenMap, String gameId) {
+	public Game(String namePlayer, Hero chosenHero, BaseMap chosenMap) {
 		this.namePlayer = namePlayer;
 		this.chosenHero = chosenHero;
 		this.chosenMap = chosenMap;
-		this.gameId = gameId;
 		currentCase = 0;
 		status = GameStatus.IN_PROGRESS;
 		lastLog = "Bienvenue " + chosenHero.getName() + "!";
@@ -104,6 +105,13 @@ public class Game implements GameState {
 				status = GameStatus.FINISHED;
 			}
 		}
+	}
+
+
+
+	public void setId(String gameId) {
+		this.gameId = gameId;
+		
 	}
 
 }
